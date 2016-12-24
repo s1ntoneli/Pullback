@@ -37,5 +37,21 @@
             android:textSize="15sp"
             />
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_pick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="@string/select_photos"/>
+    <ImageView
+        android:id="@+id/iv_selected_photo"
+        android:layout_width="256dp"
+        android:layout_height="128dp" />
 
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="@string/submit"/>
 </LinearLayout>

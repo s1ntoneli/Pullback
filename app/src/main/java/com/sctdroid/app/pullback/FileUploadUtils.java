@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import cz.msebera.android.httpclient.util.TextUtils;
+
 /**
  * Created by lixindong on 16/12/25.
  */
@@ -33,6 +35,25 @@ public class FileUploadUtils {
                     files[i] = new File(uris.get(i).getPath());
                 }
                 param.put("file", files);
+            }
+
+            httpClient.post(URL, param, handler);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "上传文件不存在！", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public static void updateFile(Context context, String mId, String mFilePath, AsyncHttpResponseHandler handler) {
+        AsyncHttpClient httpClient = new AsyncHttpClient();
+
+        RequestParams param = new RequestParams();
+        try {
+            if (!TextUtils.isEmpty(mFilePath)) {
+                File file = new File(mFilePath);
+                param.put("file", file);
+                param.put("id", mId);
             }
 
             httpClient.post(URL, param, handler);
