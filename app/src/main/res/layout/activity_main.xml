@@ -15,43 +15,75 @@
         android:id="@+id/upload_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
-    <LinearLayout
+        android:layout_gravity="center"
+        android:textSize="23sp"
+        android:text="@string/transport_status"
+        />
+    <include layout="@layout/divider"
+        />
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        >
         <TextView
             android:id="@+id/tv_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:contentDescription="id here.."
+            android:textSize="17sp"
+            android:textColor="#ee111111"
             tools:text="Result"/>
         <Button
             android:id="@+id/btn_capture"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="4dp"
             android:onClick="onClick"
+            android:background="#eeffffff"
             android:text="@string/capture_title"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:drawableLeft="@drawable/ic_center_focus_weak_black_24dp"
             />
-    </LinearLayout>
-    <Button
-        android:id="@+id/btn_pick"
+    </RelativeLayout>
+    <include layout="@layout/divider"
+        />
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="@string/select_photos"/>
-    <ImageView
-        android:id="@+id/iv_selected_photo"
-        android:layout_width="256dp"
-        android:layout_height="128dp" />
-
+        >
+        <Button
+            android:id="@+id/btn_pick"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="4dp"
+            android:onClick="onClick"
+            android:background="#eeffffff"
+            android:text="@string/select_photos"
+            android:drawableLeft="@drawable/ic_collections_black_24dp"
+            />
+        <ImageView
+            android:id="@+id/iv_selected_photo"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_centerVertical="true"
+            android:background="#22414141"
+            />
+    </RelativeLayout>
+    <include layout="@layout/divider"
+        />
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        android:background="#eeffffff"
+        android:textAllCaps="true"
         android:text="@string/submit"/>
 </LinearLayout>
