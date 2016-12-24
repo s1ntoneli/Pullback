@@ -52,6 +52,7 @@
     <include layout="@layout/divider"
         />
     <RelativeLayout
+        android:id="@+id/single_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -76,6 +77,10 @@
             android:background="#22414141"
             />
     </RelativeLayout>
+    <include layout="@layout/divider"
+        />
+    <include layout="@layout/recycler_view"
+        />
     <include layout="@layout/divider"
         />
     <Button

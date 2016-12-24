@@ -9,7 +9,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +21,8 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.Inflater;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.util.TextUtils;
@@ -27,6 +33,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView uploadInfo;
     private TextView resultTv;
     private ImageView selectedPhotoIv;
+    private RecyclerView mRecyclerView;
+    private ContentAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         uploadInfo = (TextView) findViewById(R.id.upload_info);
         resultTv = (TextView) findViewById(R.id.tv_result);
         selectedPhotoIv = (ImageView) findViewById(R.id.iv_selected_photo);
+        initRecyclerView();
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -45,7 +54,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             //接收多张图片
             ArrayList<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             if (uris == null) return;
-            FileUploadUtils.updateFiles(this, uris, new AsyncHttpResponseHandler() {
+            mAdapter.updateData(uris);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            /*FileUploadUtils.updateFiles(this, uris, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     uploadInfo.setText("Success " + statusCode);
@@ -55,7 +66,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     uploadInfo.setText("onFailure " + statusCode);
                 }
-            });
+            });*/
         }
     }
 
@@ -75,6 +86,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void submit() {
+        List<Uri> uris = mAdapter.getData();
         if (!TextUtils.isEmpty(mId) && !TextUtils.isEmpty(mFilePath)) {
             FileUploadUtils.updateFile(this, mId, mFilePath, new AsyncHttpResponseHandler() {
                 @Override
@@ -87,6 +99,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                     uploadInfo.setText("Success " + statusCode);
 
+                }
+            });
+        } else
+        if (uris != null && uris.size() > 0) {
+            FileUploadUtils.updateFiles(this, mId, uris, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    uploadInfo.setText("Success " + statusCode);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    uploadInfo.setText("onFailure " + statusCode);
                 }
             });
         } else {
@@ -122,6 +147,70 @@ public class MainActivity extends Activity implements View.OnClickListener {
         intent.setAction(Intent.ACTION_PICK);//Pick an item fromthe data
         intent.setType("image/*");//从所有图片中进行选择
         startActivityForResult(intent, SELECT_ORIGINAL_PIC);
+    }
+
+    private void initRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ContentAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(true);
+    }
+
+    private static class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView mDesc;
+        private ImageView mImage;
+        public ViewHolder(LayoutInflater inflater, int layoutId) {
+            super(inflater.inflate(layoutId, null));
+            mDesc = (TextView) itemView.findViewById(R.id.desc);
+            mImage = (ImageView) itemView.findViewById(R.id.image);
+        }
+
+        public void bind(Uri uri) {
+            Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath());
+            mImage.setImageBitmap(bitmap);
+            mDesc.setText(uri.getLastPathSegment());
+        }
+    }
+
+    private static class ContentAdapter extends RecyclerView.Adapter {
+        private Context mContext;
+        private List<Uri> mData;
+
+        public ContentAdapter(Context context) {
+            mContext = context;
+        }
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(mContext), R.layout.listitem_gallery);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            ViewHolder viewHolder;
+            if (holder instanceof ViewHolder) {
+                viewHolder = (ViewHolder) holder;
+                viewHolder.bind(getItem(position));
+            }
+        }
+
+        private Uri getItem(int position) {
+            return position >= 0 && position < getItemCount() ? mData.get(position) : null;
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData == null ? 0 : mData.size();
+        }
+
+        public void updateData(List<Uri> data) {
+            mData = data;
+            notifyDataSetChanged();
+        }
+
+        public List<Uri> getData() {
+            return mData;
+        }
     }
 }
 

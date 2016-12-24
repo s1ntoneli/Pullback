@@ -21,7 +21,7 @@ public class FileUploadUtils {
     public static final String URL
             = "http://192.168.1.117:8088/fileUpload";
 
-    public static void updateFiles(final Context context, List<Uri> uris, AsyncHttpResponseHandler handler) {
+    public static void updateFiles(final Context context, String id, List<Uri> uris, AsyncHttpResponseHandler handler) {
         //服务器端地址
         //手机端要上传的文件，首先要保存你手机上存在该文件
 
@@ -35,6 +35,7 @@ public class FileUploadUtils {
                     files[i] = new File(uris.get(i).getPath());
                 }
                 param.put("file", files);
+                param.put("id", id);
             }
 
             httpClient.post(URL, param, handler);
