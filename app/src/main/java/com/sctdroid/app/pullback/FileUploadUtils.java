@@ -19,7 +19,7 @@ import cz.msebera.android.httpclient.util.TextUtils;
  */
 public class FileUploadUtils {
     public static final String URL
-            = "http://192.168.1.117:8088/fileUpload";
+            = "http://pokemongo-news.me:8080/fileUpload";
 
     public static void updateFiles(final Context context, String id, List<Uri> uris, AsyncHttpResponseHandler handler) {
         //服务器端地址
